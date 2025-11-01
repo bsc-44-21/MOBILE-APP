@@ -3,27 +3,30 @@ package com.example.labwork
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.labwork.screens.AgriBotScreen
+import com.example.labwork.screens.DetectScreen
+import com.example.labwork.screens.TaskReminderScreen
+import com.example.labwork.screens.WeatherScreen
 import com.example.labwork.ui.theme.LabworkTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             LabworkTheme {
                 CropiaApp()
@@ -32,22 +35,30 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Navigation screens
+sealed class Screen(val title: String, val icon: ImageVector) {
+    object Detect : Screen("Detect", Icons.Filled.Search)
+    object AgriBot : Screen("AgriBot", Icons.Filled.Person)
+    object Weather : Screen("Weather", Icons.Filled.Search)
+    object Reminder : Screen("Reminder", Icons.Filled.Notifications)
+}
+
 @Composable
 fun CropiaApp() {
     val screens = listOf(
-        Screen.Home,
+        Screen.Detect,
+        Screen.AgriBot,
         Screen.Weather,
-        Screen.Tasks,
-        Screen.Profile
+        Screen.Reminder
     )
 
-    var selectedScreen by remember { mutableStateOf<Screen>(Screen.Home) }
+    var selectedScreen by remember { mutableStateOf<Screen>(Screen.Detect) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color.White, // 🌿 White background
+        containerColor = Color.White,
         bottomBar = {
-            NavigationBar(containerColor = Color(0xFF2E7D32)) { // Dark green bar
+            NavigationBar(containerColor = Color(0xFF2E7D32)) {
                 screens.forEach { screen ->
                     val selected = screen == selectedScreen
                     NavigationBarItem(
@@ -57,12 +68,12 @@ fun CropiaApp() {
                             Icon(
                                 screen.icon,
                                 contentDescription = screen.title,
-                                tint = if (selected) Color.White else Color(0xFFC8E6C9) // lighter green tint
+                                tint = if (selected) Color.Green else Color(0xFFFFFFFF)
                             )
                         },
                         label = {
                             Text(
-                                text = screen.title,
+                                screen.title,
                                 color = if (selected) Color.White else Color(0xFFC8E6C9)
                             )
                         }
@@ -71,23 +82,46 @@ fun CropiaApp() {
             }
         }
     ) { innerPadding ->
-        when (selectedScreen) {
-            Screen.Home -> HomeScreen(Modifier.padding(innerPadding))
-            Screen.Weather -> WeatherScreen(Modifier.padding(innerPadding))
-            Screen.Tasks -> TaskReminderScreen(Modifier.padding(innerPadding))
-            Screen.Profile -> ProfileScreen(Modifier.padding(innerPadding))
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()) // ✅ Leaves space for time/battery
+        ) {
+            // Top section with app name and notification icon
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "MbeuGuard",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2E7D32)
+                )
+                IconButton(onClick = { /* handle notifications */ }) {
+                    Icon(
+                        Icons.Filled.Notifications,
+                        contentDescription = "Notifications",
+                        tint = Color(0xFF2E7D32)
+                    )
+                }
+            }
+
+            // Current screen content
+            when (selectedScreen) {
+                Screen.Detect -> DetectScreen(Modifier.padding(8.dp))
+                Screen.AgriBot -> AgriBotScreen(Modifier.padding(8.dp))
+                Screen.Weather -> WeatherScreen(Modifier.padding(8.dp))
+                Screen.Reminder -> TaskReminderScreen(Modifier.padding(8.dp))
+            }
         }
     }
 }
 
-sealed class Screen(val title: String, val icon: ImageVector) {
-    object Home : Screen("Home", Icons.Filled.Home)
-    object Weather : Screen("Weather", Icons.Filled.Search)
-    object Tasks : Screen("Tasks", Icons.Filled.List)
-    object Profile : Screen("Profile", Icons.Filled.Person)
-}
-
-// 🌱 Common composable style
 @Composable
 fun CropiaSurface(content: @Composable () -> Unit) {
     Surface(
@@ -95,50 +129,6 @@ fun CropiaSurface(content: @Composable () -> Unit) {
         color = Color.White
     ) {
         content()
-    }
-}
-
-@Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-    CropiaSurface {
-        Text(
-            text = "Detect Crop Disease",
-            color = Color(0xFF2E7D32),
-            modifier = modifier.padding(16.dp)
-        )
-    }
-}
-
-@Composable
-fun WeatherScreen(modifier: Modifier = Modifier) {
-    CropiaSurface {
-        Text(
-            text = "Local Weather Info",
-            color = Color(0xFF2E7D32),
-            modifier = modifier.padding(16.dp)
-        )
-    }
-}
-
-@Composable
-fun TaskReminderScreen(modifier: Modifier = Modifier) {
-    CropiaSurface {
-        Text(
-            text = "Set and View Tasks",
-            color = Color(0xFF2E7D32),
-            modifier = modifier.padding(16.dp)
-        )
-    }
-}
-
-@Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
-    CropiaSurface {
-        Text(
-            text = "User Info",
-            color = Color(0xFF2E7D32),
-            modifier = modifier.padding(16.dp)
-        )
     }
 }
 
