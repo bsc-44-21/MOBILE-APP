@@ -50,6 +50,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
+
 
     // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.4.0")
