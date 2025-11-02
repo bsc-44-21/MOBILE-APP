@@ -73,7 +73,7 @@ fun CropiaApp() {
                             Icon(
                                 screen.icon,
                                 contentDescription = screen.title,
-                                tint = if (selected) Color.Green else Color(0xFFFFFFFF)
+                                tint = if (selected) Color(0xFF2E7D32) else Color(0xFFFFFFFF)
                             )
                         },
                         label = {

@@ -7,8 +7,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.SmartToy
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,12 +51,12 @@ fun AgriBotScreen(modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-//                    Icon(
-//                        imageVector = Icons.Filled.Person, // ✅ no error
-//                        contentDescription = "AgriBot Icon",
-//                        tint = Color.White,
-//                        modifier = Modifier.size(28.dp)
-//                    )
+                    Icon(
+                        imageVector = Icons.Filled.SmartToy, // ✅ SmartToy icon
+                        contentDescription = "AgriBot Icon",
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "AgriBot Assistant",
